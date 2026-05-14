@@ -5,6 +5,12 @@ import { ChevronRight, MapPin, CircleDot } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { AnimatedHeadline } from "@/components/AnimatedHeadline";
 import { FloatingSidebar, type BookingCategory } from "@/components/FloatingSidebar";
+import {
+  OurServicesSection,
+  WhatWeOfferSection,
+  PricingSection,
+  QrDownloadSection,
+} from "@/components/HomeSections";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -41,7 +47,7 @@ const SPECIAL_FARES = [
 ];
 
 function Index() {
-  const [category, setCategory] = useState<BookingCategory>("taxi");
+  const [category, setCategory] = useState<BookingCategory>("bus");
   const [tab, setTab] = useState<RideTab>("Request a ride");
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
@@ -168,7 +174,7 @@ function Index() {
               </button>
             </div>
 
-            <p className="mt-3 text-[10px] text-foreground/40">Bell offers</p>
+            <p className="mt-3 text-[10px] text-foreground/40">Best offers</p>
           </div>
 
           {/* Right column: special fares + secondary image */}
@@ -203,6 +209,11 @@ function Index() {
             </div>
           </div>
         </section>
+
+        <OurServicesSection />
+        <WhatWeOfferSection />
+        <PricingSection />
+        <QrDownloadSection />
       </main>
     </div>
   );
