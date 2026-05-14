@@ -1,29 +1,62 @@
 import { Link } from "@tanstack/react-router";
+import { Globe } from "lucide-react";
+
+const navItems = [
+  { label: "Home", to: "/" },
+  { label: "About Us", to: "/" },
+  { label: "Our Services", to: "/" },
+  { label: "Blog", to: "/" },
+  { label: "Contact Us", to: "/" },
+] as const;
 
 export function Navbar() {
   return (
-    <header className="border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link to="/" className="font-black text-2xl tracking-tight text-foreground">
+    <header className="w-full px-6 pt-5">
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4">
+        {/* Wordmark */}
+        <Link
+          to="/"
+          className="font-black text-xl tracking-tight text-foreground/90 hidden md:block"
+        >
           DUD
         </Link>
-        <div className="flex items-center gap-6 text-sm">
-          <Link
-            to="/"
-            activeProps={{ className: "font-semibold text-foreground" }}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+
+        {/* Center pill nav */}
+        <nav className="flex items-center gap-1 rounded-full bg-white/90 backdrop-blur shadow-[0_2px_18px_rgba(60,60,90,0.06)] px-2 py-1.5 border border-white">
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              className="px-4 py-1.5 text-[13px] font-medium text-foreground/70 hover:text-foreground rounded-full hover:bg-secondary/60 transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right utility actions */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-label="Language"
+            className="h-9 w-9 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
           >
-            Home
-          </Link>
-          <Link
-            to="/plans-pricing"
-            activeProps={{ className: "font-semibold text-foreground" }}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            <Globe className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors"
           >
-            Plans & Pricing
-          </Link>
+            See all plans
+          </button>
+          <button
+            type="button"
+            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors"
+          >
+            Login & Signup
+          </button>
         </div>
-      </nav>
+      </div>
     </header>
   );
 }
