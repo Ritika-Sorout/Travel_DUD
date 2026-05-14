@@ -1,26 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/Navbar";
+import { AnimatedHeadline } from "@/components/AnimatedHeadline";
+import { ServiceTabs } from "@/components/ServiceTabs";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="mx-auto max-w-6xl px-4 py-12">
+        <section className="flex flex-col items-center gap-6 py-12">
+          <AnimatedHeadline />
+          <p className="max-w-xl text-center text-muted-foreground">
+            Plan, book, and travel with DUD — your all-in-one travel companion.
+          </p>
+        </section>
+        <section className="mt-8">
+          <ServiceTabs />
+        </section>
+      </main>
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
