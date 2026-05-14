@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Globe } from "lucide-react";
+import logo from "@/assets/dud-logo.png";
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -13,12 +14,18 @@ export function Navbar() {
   return (
     <header className="w-full px-6 pt-5">
       <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4">
-        {/* Wordmark */}
-        <Link
-          to="/"
-          className="font-black text-xl tracking-tight text-foreground/90 hidden md:block"
-        >
-          DUD
+        {/* Logo + wordmark */}
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img
+            src={logo}
+            alt="DUD"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+          />
+          <span className="font-black text-xl tracking-tight text-foreground/90 hidden md:inline">
+            DUD
+          </span>
         </Link>
 
         {/* Center pill nav */}
@@ -43,12 +50,12 @@ export function Navbar() {
           >
             <Globe className="h-4 w-4" />
           </button>
-          <button
-            type="button"
-            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors"
+          <Link
+            to="/plans-pricing"
+            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center"
           >
             See all plans
-          </button>
+          </Link>
           <button
             type="button"
             className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors"

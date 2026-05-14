@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlansPricingRouteImport } from './routes/plans-pricing'
+import { Route as HotelsRouteImport } from './routes/hotels'
 import { Route as IndexRouteImport } from './routes/index'
 
 const PlansPricingRoute = PlansPricingRouteImport.update({
   id: '/plans-pricing',
   path: '/plans-pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HotelsRoute = HotelsRouteImport.update({
+  id: '/hotels',
+  path: '/hotels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hotels': typeof HotelsRoute
   '/plans-pricing': typeof PlansPricingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hotels': typeof HotelsRoute
   '/plans-pricing': typeof PlansPricingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hotels': typeof HotelsRoute
   '/plans-pricing': typeof PlansPricingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/plans-pricing'
+  fullPaths: '/' | '/hotels' | '/plans-pricing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/plans-pricing'
-  id: '__root__' | '/' | '/plans-pricing'
+  to: '/' | '/hotels' | '/plans-pricing'
+  id: '__root__' | '/' | '/hotels' | '/plans-pricing'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HotelsRoute: typeof HotelsRoute
   PlansPricingRoute: typeof PlansPricingRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/plans-pricing'
       fullPath: '/plans-pricing'
       preLoaderRoute: typeof PlansPricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hotels': {
+      id: '/hotels'
+      path: '/hotels'
+      fullPath: '/hotels'
+      preLoaderRoute: typeof HotelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,8 +87,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HotelsRoute: HotelsRoute,
   PlansPricingRoute: PlansPricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

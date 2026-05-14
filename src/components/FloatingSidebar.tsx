@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Car, Bus, Plane, Bike, Hotel, CarTaxiFront } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import taxiIcon from "@/assets/icons/taxi.png";
+import busIcon from "@/assets/icons/bus.png";
+import flightIcon from "@/assets/icons/flight.png";
+import autoIcon from "@/assets/icons/auto.png";
+import hotelIcon from "@/assets/icons/hotel.png";
+import bikeIcon from "@/assets/icons/bike.png";
 
 export type BookingCategory =
   | "taxi"
@@ -10,13 +16,13 @@ export type BookingCategory =
   | "hotel"
   | "bike";
 
-const items: { id: BookingCategory; label: string; Icon: typeof Car }[] = [
-  { id: "taxi", label: "Taxi", Icon: CarTaxiFront },
-  { id: "bus", label: "Bus", Icon: Bus },
-  { id: "flight", label: "Flight", Icon: Plane },
-  { id: "auto", label: "Auto", Icon: Car },
-  { id: "hotel", label: "Hotel", Icon: Hotel },
-  { id: "bike", label: "Bike", Icon: Bike },
+const items: { id: BookingCategory; label: string; src: string }[] = [
+  { id: "taxi", label: "Taxi", src: taxiIcon },
+  { id: "bus", label: "Bus", src: busIcon },
+  { id: "flight", label: "Flight", src: flightIcon },
+  { id: "auto", label: "Auto", src: autoIcon },
+  { id: "hotel", label: "Hotel", src: hotelIcon },
+  { id: "bike", label: "Bike", src: bikeIcon },
 ];
 
 interface FloatingSidebarProps {
@@ -28,42 +34,53 @@ export function FloatingSidebar({
   active: controlled,
   onChange,
 }: FloatingSidebarProps) {
-  const [internal, setInternal] = useState<BookingCategory>("taxi");
+  const [internal, setInternal] = useState<BookingCategory>("bus");
+  const navigate = useNavigate();
   const active = controlled ?? internal;
 
   const handleClick = (id: BookingCategory) => {
     setInternal(id);
     onChange?.(id);
+    if (id === "hotel") {
+      navigate({ to: "/hotels" });
+    }
   };
 
   return (
     <aside className="fixed left-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
-      <div className="flex flex-col items-center gap-2 rounded-r-3xl bg-white/85 backdrop-blur-md border border-white shadow-[0_8px_30px_rgba(60,60,90,0.10)] py-3 px-2">
-        {items.map(({ id, label, Icon }) => {
+      <div className="flex flex-col items-center gap-1 rounded-r-3xl bg-white/90 backdrop-blur-md border border-white shadow-[0_8px_30px_rgba(60,60,90,0.10)] py-3 px-2">
+        {items.map(({ id, label, src }) => {
           const isActive = active === id;
           return (
             <button
               key={id}
               type="button"
               onClick={() => handleClick(id)}
-              className="group relative flex flex-col items-center gap-0.5 px-1.5 py-1.5"
+              className="group relative flex flex-col items-center gap-0.5 px-1 py-1"
               aria-label={label}
             >
               <motion.span
-                whileHover={{ scale: 1.06 }}
+                whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.94 }}
                 className={
-                  "relative flex h-10 w-10 items-center justify-center rounded-xl transition-all " +
+                  "relative flex h-11 w-11 items-center justify-center rounded-2xl transition-all " +
                   (isActive
-                    ? "bg-foreground text-background shadow-[0_6px_20px_rgba(60,60,90,0.25)]"
-                    : "bg-secondary/70 text-foreground/70 group-hover:bg-secondary")
+                    ? "bg-secondary shadow-[0_4px_14px_rgba(60,60,90,0.12)]"
+                    : "bg-transparent group-hover:bg-secondary/60")
                 }
               >
-                <Icon className="h-5 w-5" strokeWidth={1.6} />
+                <img
+                  src={src}
+                  alt={label}
+                  width={32}
+                  height={32}
+                  className="h-8 w-8 object-contain"
+                  loading="lazy"
+                />
                 {isActive && (
                   <motion.span
                     layoutId="sidebar-glow"
-                    className="absolute inset-0 rounded-xl ring-2 ring-foreground/10"
+                    className="absolute inset-0 rounded-2xl ring-2 ring-foreground/10"
                     transition={{ type: "spring", damping: 22, stiffness: 220 }}
                   />
                 )}
