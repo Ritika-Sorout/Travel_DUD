@@ -1,40 +1,51 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-export function AnimatedHeadline() {
-  const [index, setIndex] = useState(0);
-  const words = useMemo(
-    () => ["smarter", "efficient", "stress-free", "seamless", "safer"],
-    [],
+interface AnimatedHeadlineProps {
+  prefix?: string;
+  suffix?: string;
+  words?: string[];
+  intervalMs?: number;
+}
+
+export function AnimatedHeadline({
+  prefix = "Ride smarter where every trip feels",
+  suffix = "....",
+  words,
+  intervalMs = 2000,
+}: AnimatedHeadlineProps) {
+  const list = useMemo(
+    () => words ?? ["effortless", "efficient", "safer", "seamless", "stress-free"],
+    [words],
   );
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      setIndex((prev) => (prev + 1) % words.length);
-    }, 2000);
+    const id = setTimeout(
+      () => setIndex((p) => (p + 1) % list.length),
+      intervalMs,
+    );
     return () => clearTimeout(id);
-  }, [index, words]);
+  }, [index, list, intervalMs]);
 
   return (
-    <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-center leading-tight">
-      Travel{" "}
-      <span className="relative inline-flex justify-center overflow-hidden h-[1.2em] w-[12rem] md:w-[16rem] align-bottom">
-        {words.map((word, i) => (
+    <h1 className="text-[44px] md:text-[56px] lg:text-[64px] font-light leading-[1.05] tracking-tight text-foreground/90">
+      {prefix}{" "}
+      <span className="relative inline-block align-baseline">
+        <AnimatePresence mode="wait">
           <motion.span
-            key={word}
-            className="absolute text-blue-600 font-extrabold"
-            initial={{ opacity: 0, y: 60 }}
-            animate={
-              index === i
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: index > i ? -60 : 60 }
-            }
-            transition={{ type: "spring", stiffness: 80, damping: 18 }}
+            key={list[index]}
+            initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -24, filter: "blur(6px)" }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-block italic font-normal text-foreground"
           >
-            {word}
+            {list[index]}
           </motion.span>
-        ))}
+        </AnimatePresence>
       </span>
+      {suffix}
     </h1>
   );
 }
