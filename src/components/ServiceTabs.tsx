@@ -1,156 +1,66 @@
 import { useState } from "react";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 
-function ComingSoon({ label }: { label: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-12 text-center">
-      <p className="text-lg font-semibold text-foreground">{label} — Coming Soon</p>
-      <p className="text-sm text-muted-foreground">
-        We're working on it. Check back soon.
-      </p>
-    </div>
-  );
-}
+type TabId = "flights" | "cab" | "bike" | "hotels";
 
-function HotelsForm() {
-  const [checkIn, setCheckIn] = useState<Date>();
-  const [checkOut, setCheckOut] = useState<Date>();
-
-  return (
-    <form
-      onSubmit={(e) => e.preventDefault()}
-      className="grid gap-4 rounded-lg border border-border bg-card p-6 shadow-sm"
-    >
-      <div className="grid gap-2">
-        <Label htmlFor="destination">Destination</Label>
-        <Input id="destination" placeholder="Where are you going?" />
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label>Check-in</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "justify-start text-left font-normal",
-                  !checkIn && "text-muted-foreground",
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {checkIn ? format(checkIn, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={checkIn}
-                onSelect={setCheckIn}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="grid gap-2">
-          <Label>Check-out</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "justify-start text-left font-normal",
-                  !checkOut && "text-muted-foreground",
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {checkOut ? format(checkOut, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={checkOut}
-                onSelect={setCheckOut}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="grid gap-2">
-          <Label htmlFor="rooms">Rooms</Label>
-          <Input id="rooms" type="number" min={1} defaultValue={1} />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="guests">Guests</Label>
-          <Input id="guests" type="number" min={1} defaultValue={2} />
-        </div>
-        <div className="grid gap-2">
-          <Label>Room type</Label>
-          <Select defaultValue="standard">
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="standard">Standard</SelectItem>
-              <SelectItem value="deluxe">Deluxe</SelectItem>
-              <SelectItem value="suite">Suite</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <Button
-        type="submit"
-        className="w-full bg-blue-600 text-white hover:bg-blue-700 sm:w-auto sm:justify-self-end"
-      >
-        Search Hotels
-      </Button>
-    </form>
-  );
-}
+const TABS: { id: TabId; label: string; emoji: string; disabled: boolean }[] = [
+  { id: "flights", label: "Flights", emoji: "✈️", disabled: true },
+  { id: "cab", label: "Cab", emoji: "🚕", disabled: true },
+  { id: "bike", label: "Bike", emoji: "🏍️", disabled: true },
+  { id: "hotels", label: "Hotels", emoji: "🏨", disabled: false },
+];
 
 export function ServiceTabs() {
+  const [active, setActive] = useState<TabId>("hotels");
+
+  const activeTab = TABS.find((t) => t.id === active)!;
+
   return (
-    <Tabs defaultValue="hotels" className="w-full">
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="flights">✈️ Flights</TabsTrigger>
-        <TabsTrigger value="cab">🚕 Cab</TabsTrigger>
-        <TabsTrigger value="bike">🏍️ Bike</TabsTrigger>
-        <TabsTrigger value="hotels">🏨 Hotels</TabsTrigger>
-      </TabsList>
-      <TabsContent value="flights" className="mt-6">
-        <ComingSoon label="Flights" />
-      </TabsContent>
-      <TabsContent value="cab" className="mt-6">
-        <ComingSoon label="Cab" />
-      </TabsContent>
-      <TabsContent value="bike" className="mt-6">
-        <ComingSoon label="Bike" />
-      </TabsContent>
-      <TabsContent value="hotels" className="mt-6">
-        <HotelsForm />
-      </TabsContent>
-    </Tabs>
+    <div className="w-full">
+      <div className="flex flex-wrap gap-2 rounded-2xl bg-white/80 backdrop-blur p-2 shadow-md">
+        {TABS.map((tab) => {
+          const isActive = active === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActive(tab.id)}
+              className={
+                "flex flex-col items-center gap-1 rounded-xl px-4 py-2 text-sm font-medium transition-colors cursor-pointer " +
+                (isActive
+                  ? "bg-blue-600 text-white"
+                  : "bg-transparent text-gray-500 hover:bg-gray-100")
+              }
+            >
+              <span>
+                <span className="mr-1">{tab.emoji}</span>
+                {tab.label}
+              </span>
+              {isActive && tab.disabled && (
+                <span className="animate-pulse bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">
+                  Coming Soon 🚧
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="min-h-[200px] bg-white rounded-2xl shadow-md p-6 mt-2">
+        {activeTab.disabled ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <div className="text-6xl">{activeTab.emoji}</div>
+            <h3 className="text-2xl font-bold text-gray-800">Coming Soon</h3>
+            <p className="text-gray-500">
+              We're building this — check back soon!
+            </p>
+            <span className="animate-pulse bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full">
+              In Development 🚧
+            </span>
+          </div>
+        ) : (
+          <div className="text-gray-500">Hotels form loads here</div>
+        )}
+      </div>
+    </div>
   );
 }
