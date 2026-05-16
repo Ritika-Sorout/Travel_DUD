@@ -12,7 +12,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-// FIX: "Bike Pooling" capitalised P to match CATEGORY_META label after fix in service-images.ts
 const LABEL_ICONS: Record<string, LucideIcon> = {
   Taxi: CarTaxiFront,
   Bus: Bus,
@@ -22,6 +21,7 @@ const LABEL_ICONS: Record<string, LucideIcon> = {
   Hotels: Hotel,
   Hotel: Hotel,
   Bike: Bike,
+  "Bike pooling": Bike,
   "Bike Pooling": Bike,
 };
 
@@ -56,18 +56,17 @@ export function ServiceImage({
       whileHover={{ y: -5, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 240, damping: 22 }}
-      style={{ position: "relative" }}
       className={
-        "group rounded-[20px] overflow-hidden shadow-[0_8px_28px_rgba(60,60,90,0.10)] bg-secondary cursor-pointer " +
+        "group relative rounded-[20px] overflow-hidden shadow-[0_8px_28px_rgba(60,60,90,0.10)] bg-secondary cursor-pointer " +
         className
       }
     >
-      {/* Skeleton loader */}
+      {/* Skeleton */}
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-secondary to-secondary/60" />
       )}
 
-      {/* Rotating image */}
+      {/* Rotating image — fills container via absolute inset-0 */}
       <AnimatePresence mode="wait">
         <motion.img
           key={images[index]}
@@ -80,16 +79,23 @@ export function ServiceImage({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 h-full w-full object-cover object-center will-change-transform transition-transform duration-700 group-hover:scale-[1.06]"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
         />
       </AnimatePresence>
 
-      {/* Strong gradient so label is always readable */}
+      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/0 transition-opacity duration-300 group-hover:from-black/85" />
 
       {overlay}
 
-      {/* Always-visible label at the bottom */}
+      {/* Label */}
       {label && (
         <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
           <div className="flex items-center gap-1.5">
@@ -102,8 +108,6 @@ export function ServiceImage({
               {label}
             </span>
           </div>
-
-          {/* Arrow slides in on hover */}
           {to && (
             <motion.span
               initial={false}
@@ -115,7 +119,7 @@ export function ServiceImage({
         </div>
       )}
 
-      {/* Dot indicators for image rotation */}
+      {/* Dot indicators */}
       {images.length > 1 && (
         <div className="absolute top-3 right-3 flex gap-1">
           {images.map((_, i) => (
@@ -129,15 +133,6 @@ export function ServiceImage({
           ))}
         </div>
       )}
-
-      {/* Preload next image */}
-      {images.length > 1 && (
-        <link
-          rel="preload"
-          as="image"
-          href={images[(index + 1) % images.length]}
-        />
-      )}
     </motion.div>
   );
 
@@ -145,7 +140,8 @@ export function ServiceImage({
     return (
       <Link
         to={to}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-[20px]"
+        style={{ display: "block" }}
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-[20px]"
       >
         {Inner}
       </Link>

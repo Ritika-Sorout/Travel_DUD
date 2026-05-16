@@ -23,12 +23,12 @@ function SectionEyebrow({ children }: { children: string }) {
 /* -------------------------------------------------------------------------- */
 
 const SERVICE_GRID = [
-  { key: "taxi",        cls: "col-span-12 md:col-span-6 h-[260px]" },
-  { key: "flight",      cls: "col-span-12 md:col-span-6 h-[260px]" },
-  { key: "hotel",       cls: "col-span-6 md:col-span-3 h-[200px]" },
-  { key: "bus",         cls: "col-span-6 md:col-span-3 h-[200px]" },
-  { key: "bikePooling", cls: "col-span-6 md:col-span-3 h-[200px]" },
-  { key: "auto",        cls: "col-span-6 md:col-span-3 h-[200px]" },
+  { key: "taxi",        tall: true  },
+  { key: "flight",      tall: true  },
+  { key: "hotel",       tall: false },
+  { key: "bus",         tall: false },
+  { key: "bikePooling", tall: false },
+  { key: "auto",        tall: false },
 ] as const;
 
 export function OurServicesSection() {
@@ -40,18 +40,38 @@ export function OurServicesSection() {
         <span className="opacity-60">.....</span>
       </h3>
 
-      <div className="mt-8 grid grid-cols-12 gap-4">
-        {SERVICE_GRID.map(({ key, cls }) => {
+      {/* Top row: 2 wide landscape cards */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {SERVICE_GRID.filter(({ tall }) => tall).map(({ key }) => {
           const meta = CATEGORY_META[key];
           return (
-            <ServiceImage
-              key={key}
-              images={SERVICE_IMAGES[key]}
-              alt={meta.label}
-              label={meta.label}
-              to={meta.route}
-              className={cls}
-            />
+            <div key={key} style={{ height: 260 }}>
+              <ServiceImage
+                images={SERVICE_IMAGES[key]}
+                alt={meta.label}
+                label={meta.label}
+                to={meta.route}
+                className="w-full h-full"
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom row: 4 equal landscape cards */}
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {SERVICE_GRID.filter(({ tall }) => !tall).map(({ key }) => {
+          const meta = CATEGORY_META[key];
+          return (
+            <div key={key} style={{ height: 200 }}>
+              <ServiceImage
+                images={SERVICE_IMAGES[key]}
+                alt={meta.label}
+                label={meta.label}
+                to={meta.route}
+                className="w-full h-full"
+              />
+            </div>
           );
         })}
       </div>
