@@ -26,12 +26,12 @@ type Item = {
 };
 
 const items: Item[] = [
-  { id: "taxi", label: "Taxi", to: "/taxi", Icon: CarTaxiFront },
-  { id: "bus", label: "Bus", to: "/bus", Icon: Bus },
-  { id: "flight", label: "Flight", to: "/flights", Icon: Plane },
-  { id: "auto", label: "Auto", to: "/auto", Icon: Car },
-  { id: "hotel", label: "Hotel", to: "/hotels", Icon: Hotel },
-  { id: "bike", label: "Bike", to: "/bike-pooling", Icon: Bike },
+  { id: "taxi",   label: "Taxi",   to: "/taxi",         Icon: CarTaxiFront },
+  { id: "bus",    label: "Bus",    to: "/bus",          Icon: Bus          },
+  { id: "flight", label: "Flight", to: "/flights",      Icon: Plane        },
+  { id: "auto",   label: "Auto",   to: "/auto",         Icon: Car          },
+  { id: "hotel",  label: "Hotel",  to: "/hotels",       Icon: Hotel        },
+  { id: "bike",   label: "Bike",   to: "/bike-pooling", Icon: Bike         },
 ];
 
 interface FloatingSidebarProps {
@@ -45,12 +45,34 @@ function deriveActive(pathname: string): BookingCategory {
   return match?.id ?? "bus";
 }
 
-export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
+export function FloatingSidebar({ active: controlled, onChange }: FloatingSidebarProps) {
   const { pathname } = useLocation();
   const active = controlled ?? deriveActive(pathname);
 
   return (
-    <aside className="fixed left-3 top-1/2 -translate-y-1/2 z-30 hidden md:block">
+    // Outer wrapper handles the fixed positioning + the idle float animation
+    <motion.aside
+      className="fixed left-3 top-1/2 z-30 hidden md:block"
+      style={{ translateY: "-50%" }}
+      // Idle float: continuously bobs up and down
+      animate={{ y: [0, -6, 0] }}
+      transition={{
+        duration: 3.5,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatType: "loop",
+      }}
+      // On hover, lift the sidebar a bit more and scale up slightly
+      whileHover={{
+        y: -10,
+        scale: 1.03,
+        transition: {
+          type: "spring",
+          stiffness: 280,
+          damping: 18,
+        },
+      }}
+    >
       <div
         className="flex flex-col items-center gap-1 rounded-3xl border border-white/40 bg-white/40 backdrop-blur-xl px-2 py-3 shadow-[0_20px_60px_-20px_rgba(60,60,90,0.25),inset_0_1px_0_rgba(255,255,255,0.6)]"
         role="navigation"
@@ -58,20 +80,23 @@ export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
       >
         {items.map(({ id, label, to, Icon }) => {
           const isActive = active === id;
+
           return (
             <Link
               key={id}
               to={to}
               aria-label={label}
               aria-current={isActive ? "page" : undefined}
+              onClick={() => onChange?.(id)}
               className="group relative flex flex-col items-center gap-0.5 px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-2xl"
             >
               <motion.span
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.94 }}
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 320, damping: 22 }}
                 className="relative flex h-11 w-11 items-center justify-center rounded-2xl"
               >
+                {/* Active background pill, animates between items */}
                 {isActive && (
                   <motion.span
                     layoutId="sidebar-active-pill"
@@ -79,14 +104,13 @@ export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
                     transition={{ type: "spring", damping: 24, stiffness: 240 }}
                   />
                 )}
-                <span
-                  className={
-                    "absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10"
-                  }
-                />
+
+                {/* Hover glow layer */}
+                <span className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10" />
+
                 <Icon
                   className={
-                    "relative h-5 w-5 transition-colors " +
+                    "relative h-5 w-5 transition-colors duration-200 " +
                     (isActive
                       ? "text-indigo-600"
                       : "text-foreground/60 group-hover:text-foreground")
@@ -95,9 +119,10 @@ export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
                   aria-hidden="true"
                 />
               </motion.span>
+
               <span
                 className={
-                  "text-[10px] font-medium transition-colors " +
+                  "text-[10px] font-medium transition-colors duration-200 " +
                   (isActive ? "text-foreground" : "text-foreground/50")
                 }
               >
@@ -107,6 +132,6 @@ export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
           );
         })}
       </div>
-    </aside>
+    </motion.aside>
   );
 }
