@@ -85,27 +85,28 @@ export function WhatWeOfferSection() {
         </Link>
       </div>
 
-      <div className="mt-6 grid grid-cols-12 gap-4 items-end">
+      {/* FIX: equal col-span-4 for all three (4+4+4=12), uniform height, items-stretch */}
+      <div className="mt-6 grid grid-cols-12 gap-4 items-stretch">
         <ServiceImage
           images={SERVICE_IMAGES.flight}
           alt="Flights"
           label="Flights"
           to="/flights"
-          className="col-span-12 sm:col-span-6 md:col-span-4 h-[260px]"
+          className="col-span-12 sm:col-span-6 md:col-span-4 h-[280px]"
         />
         <ServiceImage
           images={SERVICE_IMAGES.hotel}
           alt="Hotels"
           label="Hotels"
           to="/hotels"
-          className="col-span-12 sm:col-span-6 md:col-span-3 h-[200px]"
+          className="col-span-12 sm:col-span-6 md:col-span-4 h-[280px]"
         />
         <ServiceImage
           images={SERVICE_IMAGES.bus}
           alt="Bus"
           label="Bus"
           to="/bus"
-          className="col-span-12 md:col-span-5 h-[300px]"
+          className="col-span-12 sm:col-span-12 md:col-span-4 h-[280px]"
         />
       </div>
     </section>
