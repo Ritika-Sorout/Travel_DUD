@@ -56,8 +56,9 @@ export function ServiceImage({
       whileHover={{ y: -5, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 240, damping: 22 }}
+      style={{ position: "relative" }}
       className={
-        "group relative rounded-[20px] overflow-hidden shadow-[0_8px_28px_rgba(60,60,90,0.10)] bg-secondary cursor-pointer " +
+        "group rounded-[20px] overflow-hidden shadow-[0_8px_28px_rgba(60,60,90,0.10)] bg-secondary cursor-pointer " +
         className
       }
     >
@@ -79,7 +80,7 @@ export function ServiceImage({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 h-full w-full object-cover will-change-transform transition-transform duration-700 group-hover:scale-[1.06]"
+          className="absolute inset-0 h-full w-full object-cover object-center will-change-transform transition-transform duration-700 group-hover:scale-[1.06]"
         />
       </AnimatePresence>
 

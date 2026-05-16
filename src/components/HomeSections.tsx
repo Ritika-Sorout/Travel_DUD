@@ -23,12 +23,12 @@ function SectionEyebrow({ children }: { children: string }) {
 /* -------------------------------------------------------------------------- */
 
 const SERVICE_GRID = [
-  { key: "taxi",        cls: "col-span-12 sm:col-span-6 h-[280px]" },
-  { key: "flight",      cls: "col-span-12 sm:col-span-6 h-[280px]" },
-  { key: "hotel",       cls: "col-span-12 sm:col-span-4 h-[220px]" },
-  { key: "bus",         cls: "col-span-12 sm:col-span-4 h-[220px]" },
-  { key: "bikePooling", cls: "col-span-12 sm:col-span-4 h-[220px]" },
-  { key: "auto",        cls: "col-span-12 sm:col-span-4 h-[220px]" },
+  { key: "taxi",        cls: "col-span-12 md:col-span-6 h-[260px]" },
+  { key: "flight",      cls: "col-span-12 md:col-span-6 h-[260px]" },
+  { key: "hotel",       cls: "col-span-6 md:col-span-3 h-[200px]" },
+  { key: "bus",         cls: "col-span-6 md:col-span-3 h-[200px]" },
+  { key: "bikePooling", cls: "col-span-6 md:col-span-3 h-[200px]" },
+  { key: "auto",        cls: "col-span-6 md:col-span-3 h-[200px]" },
 ] as const;
 
 export function OurServicesSection() {
