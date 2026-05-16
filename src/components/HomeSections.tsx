@@ -5,9 +5,6 @@ import { Check, ChevronDown, ShieldCheck, Sparkles } from "lucide-react";
 import { ServiceImage } from "@/components/ServiceImage";
 import { SERVICE_IMAGES, CATEGORY_META } from "@/lib/service-images";
 
-/* -------------------------------------------------------------------------- */
-/*                            Shared section helper                            */
-/* -------------------------------------------------------------------------- */
 
 function SectionEyebrow({ children }: { children: string }) {
   return (
@@ -17,9 +14,7 @@ function SectionEyebrow({ children }: { children: string }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               Our Services                                  */
-/* -------------------------------------------------------------------------- */
+
 
 const SERVICE_GRID = [
   { key: "taxi", cls: "col-span-12 sm:col-span-6 md:col-span-3 h-[200px]" },
@@ -58,9 +53,7 @@ export function OurServicesSection() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                              What We Offer                                  */
-/* -------------------------------------------------------------------------- */
+
 
 export function WhatWeOfferSection() {
   return (
@@ -113,9 +106,6 @@ export function WhatWeOfferSection() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                  Pricing                                    */
-/* -------------------------------------------------------------------------- */
 
 export type BillingCycle = "monthly" | "yearly";
 
@@ -426,9 +416,7 @@ function TrustRow() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                  QR cards                                   */
-/* -------------------------------------------------------------------------- */
+
 
 const QR_PLACEHOLDER =
   "data:image/svg+xml;utf8," +
