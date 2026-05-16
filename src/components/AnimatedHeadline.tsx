@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface AnimatedHeadlineProps {
   prefix?: string;
@@ -19,6 +19,7 @@ export function AnimatedHeadline({
     [words],
   );
   const [index, setIndex] = useState(0);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     const id = setTimeout(
@@ -35,11 +36,34 @@ export function AnimatedHeadline({
         <AnimatePresence mode="wait">
           <motion.span
             key={list[index]}
-            initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -24, filter: "blur(6px)" }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-block italic font-normal text-foreground"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24, filter: "blur(6px)" }}
+            animate={
+              reduce
+                ? { opacity: 1, backgroundPosition: "100% 50%" }
+                : {
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                  }
+            }
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -24, filter: "blur(6px)" }}
+            transition={{
+              opacity: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+              y: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+              filter: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+              backgroundPosition: { duration: 6, ease: "linear", repeat: Infinity },
+            }}
+            style={{
+              backgroundImage:
+                "linear-gradient(90deg, hsl(217 91% 60%), hsl(239 84% 67%), hsl(271 91% 65%), hsl(239 84% 67%), hsl(217 91% 60%))",
+              backgroundSize: "200% 100%",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              willChange: "transform, opacity, background-position",
+            }}
+            className="inline-block italic font-normal"
           >
             {list[index]}
           </motion.span>

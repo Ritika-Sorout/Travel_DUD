@@ -1,12 +1,14 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "@tanstack/react-router";
-import taxiIcon from "@/assets/icons/taxi.png";
-import busIcon from "@/assets/icons/bus.png";
-import flightIcon from "@/assets/icons/flight.png";
-import autoIcon from "@/assets/icons/auto.png";
-import hotelIcon from "@/assets/icons/hotel.png";
-import bikeIcon from "@/assets/icons/bike.png";
+import { Link, useLocation } from "@tanstack/react-router";
+import {
+  CarTaxiFront,
+  Bus,
+  Plane,
+  Car,
+  Hotel,
+  Bike,
+  type LucideIcon,
+} from "lucide-react";
 
 export type BookingCategory =
   | "taxi"
@@ -16,74 +18,82 @@ export type BookingCategory =
   | "hotel"
   | "bike";
 
-const items: { id: BookingCategory; label: string; src: string }[] = [
-  { id: "taxi", label: "Taxi", src: taxiIcon },
-  { id: "bus", label: "Bus", src: busIcon },
-  { id: "flight", label: "Flight", src: flightIcon },
-  { id: "auto", label: "Auto", src: autoIcon },
-  { id: "hotel", label: "Hotel", src: hotelIcon },
-  { id: "bike", label: "Bike", src: bikeIcon },
+type Item = {
+  id: BookingCategory;
+  label: string;
+  to: string;
+  Icon: LucideIcon;
+};
+
+const items: Item[] = [
+  { id: "taxi", label: "Taxi", to: "/taxi", Icon: CarTaxiFront },
+  { id: "bus", label: "Bus", to: "/bus", Icon: Bus },
+  { id: "flight", label: "Flight", to: "/flights", Icon: Plane },
+  { id: "auto", label: "Auto", to: "/auto", Icon: Car },
+  { id: "hotel", label: "Hotel", to: "/hotels", Icon: Hotel },
+  { id: "bike", label: "Bike", to: "/bike-pooling", Icon: Bike },
 ];
 
 interface FloatingSidebarProps {
+  /** Optional override; otherwise derived from current route. Home (/) defaults to "bus". */
   active?: BookingCategory;
   onChange?: (id: BookingCategory) => void;
 }
 
-export function FloatingSidebar({
-  active: controlled,
-  onChange,
-}: FloatingSidebarProps) {
-  const [internal, setInternal] = useState<BookingCategory>("bus");
-  const navigate = useNavigate();
-  const active = controlled ?? internal;
+function deriveActive(pathname: string): BookingCategory {
+  const match = items.find((i) => pathname.startsWith(i.to));
+  return match?.id ?? "bus";
+}
 
-  const handleClick = (id: BookingCategory) => {
-    setInternal(id);
-    onChange?.(id);
-    if (id === "hotel") {
-      navigate({ to: "/hotels" });
-    }
-  };
+export function FloatingSidebar({ active: controlled }: FloatingSidebarProps) {
+  const { pathname } = useLocation();
+  const active = controlled ?? deriveActive(pathname);
 
   return (
-    <aside className="fixed left-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
-      <div className="flex flex-col items-center gap-1 rounded-r-3xl bg-white/90 backdrop-blur-md border border-white shadow-[0_8px_30px_rgba(60,60,90,0.10)] py-3 px-2">
-        {items.map(({ id, label, src }) => {
+    <aside className="fixed left-3 top-1/2 -translate-y-1/2 z-30 hidden md:block">
+      <div
+        className="flex flex-col items-center gap-1 rounded-3xl border border-white/40 bg-white/40 backdrop-blur-xl px-2 py-3 shadow-[0_20px_60px_-20px_rgba(60,60,90,0.25),inset_0_1px_0_rgba(255,255,255,0.6)]"
+        role="navigation"
+        aria-label="Travel categories"
+      >
+        {items.map(({ id, label, to, Icon }) => {
           const isActive = active === id;
           return (
-            <button
+            <Link
               key={id}
-              type="button"
-              onClick={() => handleClick(id)}
-              className="group relative flex flex-col items-center gap-0.5 px-1 py-1"
+              to={to}
               aria-label={label}
+              aria-current={isActive ? "page" : undefined}
+              className="group relative flex flex-col items-center gap-0.5 px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-2xl"
             >
               <motion.span
-                whileHover={{ scale: 1.08 }}
+                whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.94 }}
-                className={
-                  "relative flex h-11 w-11 items-center justify-center rounded-2xl transition-all " +
-                  (isActive
-                    ? "bg-secondary shadow-[0_4px_14px_rgba(60,60,90,0.12)]"
-                    : "bg-transparent group-hover:bg-secondary/60")
-                }
+                transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                className="relative flex h-11 w-11 items-center justify-center rounded-2xl"
               >
-                <img
-                  src={src}
-                  alt={label}
-                  width={32}
-                  height={32}
-                  className="h-8 w-8 object-contain"
-                  loading="lazy"
-                />
                 {isActive && (
                   <motion.span
-                    layoutId="sidebar-glow"
-                    className="absolute inset-0 rounded-2xl ring-2 ring-foreground/10"
-                    transition={{ type: "spring", damping: 22, stiffness: 220 }}
+                    layoutId="sidebar-active-pill"
+                    className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/15 via-indigo-500/15 to-purple-500/15 ring-1 ring-indigo-500/30 shadow-[0_8px_24px_-8px_rgba(99,102,241,0.5)]"
+                    transition={{ type: "spring", damping: 24, stiffness: 240 }}
                   />
                 )}
+                <span
+                  className={
+                    "absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10"
+                  }
+                />
+                <Icon
+                  className={
+                    "relative h-5 w-5 transition-colors " +
+                    (isActive
+                      ? "text-indigo-600"
+                      : "text-foreground/60 group-hover:text-foreground")
+                  }
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               </motion.span>
               <span
                 className={
@@ -93,7 +103,7 @@ export function FloatingSidebar({
               >
                 {label}
               </span>
-            </button>
+            </Link>
           );
         })}
       </div>
