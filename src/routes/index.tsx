@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ChevronRight, MapPin, CircleDot } from "lucide-react";
+import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { AnimatedHeadline } from "@/components/AnimatedHeadline";
 import { FloatingSidebar, type BookingCategory } from "@/components/FloatingSidebar";
@@ -12,9 +13,9 @@ import {
   QrDownloadSection,
 } from "@/components/HomeSections";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")(({
   component: Index,
-});
+}));
 
 const HERO_IMAGES: Record<BookingCategory, string> = {
   taxi: "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1400&q=80",
@@ -29,21 +30,21 @@ const SECONDARY_IMAGE =
   "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=900&q=80";
 
 const OVERLAY_CHIPS = [
-  "Easy Booking",
-  "Flexible Plans",
-  "Verified Guides",
-  "24/7 Support",
-  "Custom Itineraries",
+  { label: "Easy Booking", section: "#services" },
+  { label: "Flexible Plans", section: "/plans-pricing" },
+  { label: "Verified Guides", section: "#about" },
+  { label: "24/7 Support", section: "#contact" },
+  { label: "Custom Itineraries", section: "#services" },
 ];
 
 const RIDE_TABS = ["Reserve a ride", "Request a ride", "Bike Pooling"] as const;
 type RideTab = (typeof RIDE_TABS)[number];
 
 const SPECIAL_FARES = [
-  "Students",
-  "Senior Citizen",
-  "Doctor & Nurses",
-  "School Girls",
+  { label: "Students", discount: "15% off" },
+  { label: "Senior Citizen", discount: "20% off" },
+  { label: "Doctor & Nurses", discount: "25% off" },
+  { label: "School Girls", discount: "15% off" },
 ];
 
 function Index() {
@@ -51,6 +52,22 @@ function Index() {
   const [tab, setTab] = useState<RideTab>("Request a ride");
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
+
+  const handleBookRide = () => {
+    if (!pickup.trim() || !dropoff.trim()) {
+      toast.error("Please enter both pickup and dropoff locations.");
+      return;
+    }
+    toast.success(`Ride booked from "${pickup}" to "${dropoff}"! (Demo)`);
+  };
+
+  const handleScheduleRide = () => {
+    if (!pickup.trim() || !dropoff.trim()) {
+      toast.error("Please enter both pickup and dropoff locations.");
+      return;
+    }
+    toast.success(`Ride scheduled from "${pickup}" to "${dropoff}"! (Demo)`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,13 +118,13 @@ function Index() {
             {/* Overlay chip buttons */}
             <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
               {OVERLAY_CHIPS.map((chip) => (
-                <button
-                  key={chip}
-                  type="button"
-                  className="text-[11px] font-medium text-foreground/80 rounded-full px-3 py-1 bg-white/80 backdrop-blur border border-white/60 hover:bg-white transition-colors"
+                <a
+                  key={chip.label}
+                  href={chip.section}
+                  className="text-[11px] font-medium text-foreground/80 rounded-full px-3 py-1 bg-white/80 backdrop-blur border border-white/60 hover:bg-white transition-colors cursor-pointer"
                 >
-                  {chip}
-                </button>
+                  {chip.label}
+                </a>
               ))}
             </div>
           </motion.div>
@@ -137,7 +154,8 @@ function Index() {
             </div>
 
             <h2 className="mt-4 text-2xl font-light leading-snug text-foreground/85">
-              Request a ride for now or later.... <span className="font-medium">!!</span>
+              Request a ride for now or later....{" "}
+              <span className="font-medium">!!</span>
             </h2>
 
             {/* Pickup */}
@@ -166,10 +184,18 @@ function Index() {
 
             {/* CTAs */}
             <div className="mt-4 flex gap-2">
-              <button className="flex-1 h-10 rounded-full bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors">
+              <button
+                type="button"
+                onClick={handleBookRide}
+                className="flex-1 h-10 rounded-full bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
+              >
                 Book Ride
               </button>
-              <button className="flex-1 h-10 rounded-full bg-secondary text-foreground/80 text-sm font-medium hover:bg-secondary/80 transition-colors">
+              <button
+                type="button"
+                onClick={handleScheduleRide}
+                className="flex-1 h-10 rounded-full bg-secondary text-foreground/80 text-sm font-medium hover:bg-secondary/80 transition-colors"
+              >
                 Schedule a ride
               </button>
             </div>
@@ -186,12 +212,15 @@ function Index() {
               <ul className="mt-2 space-y-1.5">
                 {SPECIAL_FARES.map((f) => (
                   <li
-                    key={f}
+                    key={f.label}
+                    onClick={() =>
+                      toast.info(`${f.label} fare: ${f.discount} — coming soon!`)
+                    }
                     className="flex items-center justify-between gap-1 text-[11px] text-foreground/70 hover:text-foreground cursor-pointer"
                   >
                     <span className="flex items-center gap-1">
                       <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
-                      {f}
+                      {f.label}
                     </span>
                     <ChevronRight className="h-3 w-3 text-foreground/40" />
                   </li>

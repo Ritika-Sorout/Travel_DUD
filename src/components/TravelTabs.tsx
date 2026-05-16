@@ -6,8 +6,8 @@ type Tab = { id: string; label: string; icon: LucideIcon; route: string };
 
 const tabs: Tab[] = [
   { id: "flights", label: "Flights", icon: Plane, route: "/flights" },
-  { id: "cab", label: "Cab", icon: CarTaxiFront, route: "/cab" },
-  { id: "bike", label: "Bike", icon: Bike, route: "/bike" },
+  { id: "cab", label: "Cab", icon: CarTaxiFront, route: "/taxi" },
+  { id: "bike", label: "Bike", icon: Bike, route: "/bike-pooling" },
   { id: "hotels", label: "Hotels", icon: Hotel, route: "/hotels" },
 ];
 

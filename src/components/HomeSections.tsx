@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
@@ -340,6 +341,7 @@ function PricingCard({ plan, cycle }: { plan: PricingPlan; cycle: BillingCycle }
 
       <button
         type="button"
+        onClick={() => toast.success(`You selected the ${plan.name} plan! (Demo)`)}
         className={
           "group/btn relative mt-4 w-full rounded-full py-2.5 text-sm font-medium transition-all overflow-hidden " +
           (plan.popular
@@ -429,24 +431,40 @@ function TrustRow() {
 /*                                  QR cards                                   */
 /* -------------------------------------------------------------------------- */
 
+// Static QR-style placeholder — actual QR codes should be generated server-side
+// and linked to real app store URLs before going to production.
 const QR_PLACEHOLDER =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
       <rect width='100' height='100' fill='white'/>
-      ${Array.from({ length: 100 })
-        .map(() => {
-          const x = Math.floor(Math.random() * 20) * 5;
-          const y = Math.floor(Math.random() * 20) * 5;
-          return `<rect x='${x}' y='${y}' width='5' height='5' fill='black'/>`;
-        })
-        .join("")}
-      <rect x='0' y='0' width='25' height='25' fill='white' stroke='black' stroke-width='5'/>
-      <rect x='75' y='0' width='25' height='25' fill='white' stroke='black' stroke-width='5'/>
-      <rect x='0' y='75' width='25' height='25' fill='white' stroke='black' stroke-width='5'/>
-      <rect x='8' y='8' width='9' height='9' fill='black'/>
-      <rect x='83' y='8' width='9' height='9' fill='black'/>
-      <rect x='8' y='83' width='9' height='9' fill='black'/>
+      <rect x='10' y='10' width='30' height='30' fill='none' stroke='black' stroke-width='4'/>
+      <rect x='18' y='18' width='14' height='14' fill='black'/>
+      <rect x='60' y='10' width='30' height='30' fill='none' stroke='black' stroke-width='4'/>
+      <rect x='68' y='18' width='14' height='14' fill='black'/>
+      <rect x='10' y='60' width='30' height='30' fill='none' stroke='black' stroke-width='4'/>
+      <rect x='18' y='68' width='14' height='14' fill='black'/>
+      <rect x='45' y='10' width='5' height='5' fill='black'/>
+      <rect x='45' y='20' width='5' height='5' fill='black'/>
+      <rect x='45' y='30' width='5' height='5' fill='black'/>
+      <rect x='10' y='45' width='5' height='5' fill='black'/>
+      <rect x='20' y='45' width='5' height='5' fill='black'/>
+      <rect x='30' y='45' width='5' height='5' fill='black'/>
+      <rect x='45' y='45' width='5' height='5' fill='black'/>
+      <rect x='55' y='45' width='5' height='5' fill='black'/>
+      <rect x='65' y='45' width='5' height='5' fill='black'/>
+      <rect x='75' y='45' width='5' height='5' fill='black'/>
+      <rect x='85' y='45' width='5' height='5' fill='black'/>
+      <rect x='55' y='55' width='5' height='5' fill='black'/>
+      <rect x='65' y='55' width='5' height='5' fill='black'/>
+      <rect x='55' y='65' width='5' height='5' fill='black'/>
+      <rect x='75' y='65' width='5' height='5' fill='black'/>
+      <rect x='55' y='75' width='5' height='5' fill='black'/>
+      <rect x='65' y='75' width='5' height='5' fill='black'/>
+      <rect x='75' y='75' width='5' height='5' fill='black'/>
+      <rect x='85' y='75' width='5' height='5' fill='black'/>
+      <rect x='85' y='55' width='5' height='5' fill='black'/>
+      <rect x='85' y='65' width='5' height='5' fill='black'/>
     </svg>`,
   );
 

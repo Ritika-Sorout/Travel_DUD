@@ -72,7 +72,6 @@ function HotelsPage() {
     <div style={{ minHeight: "100vh", background: "#fafbfc", fontFamily: "'DM Sans', sans-serif" }}>
       <style>{`
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
       `}</style>
       <Navbar />
 
