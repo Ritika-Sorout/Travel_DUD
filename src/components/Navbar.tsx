@@ -1,83 +1,179 @@
-import { Link } from "@tanstack/react-router";
-import { Globe, LogIn } from "lucide-react";
-import logo from "@/assets/dud-logo.png";
+import { useState } from "react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Globe, LogIn, Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import logo from "@/assets/dud-logo.png";
+import { useScrollPosition } from "@/hooks/use-scroll-position";
+import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Home", to: "/", hash: false },
-  { label: "About Us", to: "/#about", hash: true },
-  { label: "Our Services", to: "/#services", hash: true },
-  { label: "Blog", to: "/#blog", hash: true },
-  { label: "Contact Us", to: "/#contact", hash: true },
-];
+  { label: "Home", to: "/" },
+  { label: "About Us", to: "/about" },
+  { label: "Our Services", to: "/services" },
+  { label: "Blog", to: "/blog" },
+  { label: "Contact Us", to: "/contact" },
+] as const;
 
-export function Navbar() {
+interface NavbarProps {
+  /** When true, navbar starts transparent (over hero) and turns glassy on scroll. */
+  overlay?: boolean;
+}
+
+export function Navbar({ overlay = false }: NavbarProps) {
+  const scrolled = useScrollPosition(60);
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+
+  const isTransparent = overlay && !scrolled;
+
   return (
-    <header className="w-full px-6 pt-5">
-      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4">
-        {/* Logo + wordmark */}
+    <header
+      className={cn(
+        "fixed top-0 inset-x-0 z-40 transition-all duration-400",
+        isTransparent
+          ? "bg-transparent"
+          : "bg-white/70 backdrop-blur-xl border-b border-white/40 shadow-[0_2px_18px_rgba(60,60,90,0.06)]"
+      )}
+      style={{ transitionDuration: "400ms" }}
+    >
+      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-4 px-6 py-4">
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img
             src={logo}
             alt="DUD"
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={36}
+            height={36}
+            className={cn(
+              "h-9 w-9 object-contain transition-all",
+              isTransparent && "brightness-0 invert"
+            )}
           />
-          <span className="font-black text-xl tracking-tight text-foreground/90 hidden md:inline">
+          <span
+            className={cn(
+              "font-black text-xl tracking-tight hidden md:inline transition-colors",
+              isTransparent ? "text-white" : "text-foreground/90"
+            )}
+          >
             DUD
           </span>
         </Link>
 
-        {/* Center pill nav */}
-        <nav className="flex items-center gap-1 rounded-full bg-white/90 backdrop-blur shadow-[0_2px_18px_rgba(60,60,90,0.06)] px-2 py-1.5 border border-white">
-          {navItems.map((item) =>
-            item.hash ? (
-              <a
-                key={item.label}
-                href={item.to}
-                className="px-4 py-1.5 text-[13px] font-medium text-foreground/70 hover:text-foreground rounded-full hover:bg-secondary/60 transition-colors"
-              >
-                {item.label}
-              </a>
-            ) : (
+        {/* Center nav */}
+        <nav className="hidden lg:flex items-center gap-1">
+          {navItems.map((item) => {
+            const active = pathname === item.to;
+            return (
               <Link
                 key={item.label}
-                to={item.to as "/"}
-                className="px-4 py-1.5 text-[13px] font-medium text-foreground/70 hover:text-foreground rounded-full hover:bg-secondary/60 transition-colors"
+                to={item.to}
+                className={cn(
+                  "relative px-4 py-2 text-sm font-medium transition-colors group",
+                  isTransparent
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/70 hover:text-foreground"
+                )}
               >
                 {item.label}
+                <span
+                  className={cn(
+                    "absolute left-3 right-3 -bottom-0.5 h-[2px] origin-left transition-transform duration-300",
+                    isTransparent ? "bg-white" : "bg-primary",
+                    active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  )}
+                />
               </Link>
-            )
-          )}
+            );
+          })}
         </nav>
 
-        {/* Right utility actions */}
-        <div className="flex items-center gap-2">
+        {/* Right actions */}
+        <div className="hidden md:flex items-center gap-2">
           <button
             type="button"
             aria-label="Language"
             onClick={() => toast.info("Language switcher coming soon.")}
-            className="h-9 w-9 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
+            className={cn(
+              "h-9 w-9 rounded-full flex items-center justify-center transition-colors border",
+              isTransparent
+                ? "bg-white/10 border-white/30 text-white hover:bg-white/20"
+                : "bg-white/90 border-white text-foreground/70 hover:text-foreground"
+            )}
           >
             <Globe className="h-4 w-4" />
           </button>
           <Link
             to="/plans-pricing"
-            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center"
+            className={cn(
+              "h-9 px-4 rounded-full text-sm font-medium transition-all flex items-center border",
+              isTransparent
+                ? "bg-transparent border-white/60 text-white hover:bg-white/10"
+                : "bg-white border-primary/30 text-primary hover:bg-primary/5"
+            )}
           >
             See all plans
           </Link>
           <button
             type="button"
             onClick={() => toast.info("Login & Signup coming soon.")}
-            className="h-9 px-4 rounded-full bg-white/90 border border-white shadow-[0_2px_18px_rgba(60,60,90,0.06)] text-[13px] font-medium text-foreground/80 hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+            className={cn(
+              "h-9 px-4 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5",
+              isTransparent
+                ? "bg-white text-foreground hover:bg-white/90"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
           >
             <LogIn className="h-3.5 w-3.5" />
-            Login & Signup
+            Login
           </button>
         </div>
+
+        {/* Mobile toggle */}
+        <button
+          type="button"
+          aria-label="Menu"
+          onClick={() => setOpen((v) => !v)}
+          className={cn(
+            "md:hidden h-10 w-10 rounded-full flex items-center justify-center",
+            isTransparent ? "text-white bg-white/10" : "text-foreground bg-white/80"
+          )}
+        >
+          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+            className="fixed top-0 right-0 bottom-0 w-72 bg-white/85 backdrop-blur-2xl border-l border-white/40 shadow-2xl p-6 md:hidden z-50"
+          >
+            <div className="flex flex-col gap-2 mt-12">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="text-base font-medium text-foreground/80 hover:text-foreground py-2 border-b border-foreground/10"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                to="/plans-pricing"
+                onClick={() => setOpen(false)}
+                className="mt-4 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-medium"
+              >
+                See all plans
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
