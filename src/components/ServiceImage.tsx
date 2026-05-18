@@ -53,20 +53,31 @@ export function ServiceImage({
 
   const Inner = (
     <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
+      whileHover={{ y: -6, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 240, damping: 22 }}
       className={
-        "group relative rounded-[20px] overflow-hidden shadow-[0_8px_28px_rgba(60,60,90,0.10)] bg-secondary cursor-pointer " +
+        "group relative rounded-[20px] overflow-hidden cursor-pointer " +
         className
       }
+      style={{
+        boxShadow:
+          "0 8px 28px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.06)",
+        background: "#0d1b2e",
+      }}
     >
       {/* Skeleton */}
       {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-secondary to-secondary/60" />
+        <div
+          className="absolute inset-0 animate-pulse"
+          style={{
+            background:
+              "linear-gradient(135deg, #112240 0%, #0a1628 100%)",
+          }}
+        />
       )}
 
-      {/* Rotating image — fills container via absolute inset-0 */}
+      {/* Rotating image */}
       <AnimatePresence mode="wait">
         <motion.img
           key={images[index]}
@@ -90,18 +101,38 @@ export function ServiceImage({
         />
       </AnimatePresence>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/0 transition-opacity duration-300 group-hover:from-black/85" />
+      {/* Gradient overlay — deepens on hover */}
+      <div
+        className="absolute inset-0 transition-opacity duration-300"
+        style={{
+          background:
+            "linear-gradient(to top, rgba(10,22,40,0.88) 0%, rgba(10,22,40,0.25) 50%, rgba(10,22,40,0.05) 100%)",
+        }}
+      />
+
+      {/* Amber glow edge on hover */}
+      <div className="absolute inset-0 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
+        style={{
+          boxShadow: "inset 0 0 0 1.5px rgba(251,191,36,0.35)",
+        }}
+      />
 
       {overlay}
 
       {/* Label */}
       {label && (
-        <div className="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
-          <div className="flex items-center gap-1.5">
+        <div className="absolute bottom-0 left-0 right-0 p-3.5 flex items-end justify-between">
+          <div className="flex items-center gap-2">
             {Icon && (
-              <span className="flex items-center justify-center h-7 w-7 rounded-full bg-white/20 backdrop-blur-sm ring-1 ring-white/30">
-                <Icon className="h-3.5 w-3.5 text-white" strokeWidth={2} />
+              <span
+                className="flex items-center justify-center h-7 w-7 rounded-full backdrop-blur-sm ring-1"
+                style={{
+                  background: "rgba(251,191,36,0.18)",
+                  ringColor: "rgba(251,191,36,0.35)",
+                  border: "1px solid rgba(251,191,36,0.35)",
+                }}
+              >
+                <Icon className="h-3.5 w-3.5 text-amber-300" strokeWidth={2} />
               </span>
             )}
             <span className="text-white font-semibold text-sm drop-shadow-md tracking-wide">
@@ -111,9 +142,13 @@ export function ServiceImage({
           {to && (
             <motion.span
               initial={false}
-              className="flex items-center justify-center h-7 w-7 rounded-full bg-white text-foreground opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 shadow-md"
+              className="flex items-center justify-center h-7 w-7 rounded-full opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 shadow-md text-xs font-bold"
+              style={{
+                background: "#fbbf24",
+                color: "#0d1b2e",
+              }}
             >
-              <span className="text-xs font-bold">→</span>
+              →
             </motion.span>
           )}
         </div>
@@ -127,7 +162,7 @@ export function ServiceImage({
               key={i}
               className={
                 "h-1 rounded-full transition-all duration-500 " +
-                (i === index ? "w-4 bg-white" : "w-1 bg-white/50")
+                (i === index ? "w-4 bg-amber-400" : "w-1 bg-white/30")
               }
             />
           ))}
@@ -141,7 +176,7 @@ export function ServiceImage({
       <Link
         to={to}
         style={{ display: "block" }}
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-[20px]"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 rounded-[20px]"
       >
         {Inner}
       </Link>
