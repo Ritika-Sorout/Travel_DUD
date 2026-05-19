@@ -125,10 +125,9 @@ export function ServiceImage({
           <div className="flex items-center gap-2">
             {Icon && (
               <span
-                className="flex items-center justify-center h-7 w-7 rounded-full backdrop-blur-sm ring-1"
+                className="flex items-center justify-center h-7 w-7 rounded-full backdrop-blur-sm"
                 style={{
                   background: "rgba(251,191,36,0.18)",
-                  ringColor: "rgba(251,191,36,0.35)",
                   border: "1px solid rgba(251,191,36,0.35)",
                 }}
               >
